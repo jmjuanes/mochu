@@ -15,8 +15,8 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: current
       - run: yarn install
@@ -34,7 +34,7 @@ jobs:
             retention-days: 1
 
   release:
-    if: ${{ github.repository == 'jmjuanes/icons' }}
+    if: ${{ github.repository == 'jmjuanes/mochu' }}
     runs-on: ubuntu-latest
     name: Release
     needs: [build]
@@ -48,13 +48,15 @@ jobs:
           generate_release_notes: true
   
   publish:
-    if: ${{ github.repository == 'jmjuanes/icons' }}
+    if: ${{ github.repository == 'jmjuanes/mochu' }}
     runs-on: ubuntu-latest
     name: Publish
     needs: [build]
+    env:
+      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version: current
           registry-url: 'https://registry.npmjs.org'
@@ -62,5 +64,3 @@ jobs:
         with:
           name: icons-package
       - run: npm publish --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
